@@ -33,26 +33,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
-/**
- * This is NOT an opmode.
- *
- * This class can be used to define all the specific hardware for a single robot.
- * In this case that robot is a Ninjabot.
- */
 public class Ninjabot
 {
-    //    ModernRoboticsI2cGyro gyro    = null;                    // Additional Gyro device
-    //BNO055IMU             gyro    = null;
-    //Orientation           gyroLastAngles = null;
-    //double                gyroGlobalAngle;
 
-    /* Public OpMode members. */
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
     public Servo claw     = null;
     public DcMotor motDrive = null;
     public DcMotor spinner = null;
+
+    BNO055IMU gyro = null;
 
     static final int REV_ROBOTICS_HDHEX_MOTOR   = 28; // ticks per rotation
     static final int REV_ROBOTICS_HDHEX_20_to_1 = REV_ROBOTICS_HDHEX_MOTOR * 20;

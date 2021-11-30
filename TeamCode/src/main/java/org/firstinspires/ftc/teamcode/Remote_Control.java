@@ -50,8 +50,32 @@ public class Remote_Control extends LinearOpMode {
 
             //determining the power based on degree on angle on joystick
             if (medSpeed <= angle & angle <= -medSpeed){
-
+                maxSpeed = 0.6;
             }
+            else if (lowSpeed <= angle & angle <= -lowSpeed){
+                maxSpeed = 0.4;
+            }
+            else{
+                maxSpeed = 0;
+            }
+
+            leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
+            rightPower  = Range.clip(yAxis - xAxis, -maxSpeed, maxSpeed);
+
+            //makeing the robot face the cardinal directions of the board when buttons pressed
+            if (upArrow == true){
+                gyroTurn(0.6, 0);
+            }
+            if (downArrow == true){
+                gyroTurn(0.6, 90);
+            }
+            if (leftArrow == true){
+                gyroTurn(0.6, 270);
+            }
+            if (rightArrow == true){
+                gyroTurn(0.6, 360);
+            }
+        }
         }
     }
 }
