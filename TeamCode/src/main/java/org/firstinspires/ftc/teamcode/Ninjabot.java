@@ -149,8 +149,6 @@ public class Ninjabot
         return((int)(rotationsNeeded * DRIVE_MOTOR_TICK_COUNTS ));
     }
 
-    /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap);
     public void gyroTurn(double speed, double angle){
         while (opModeIsActive() && !onHeading(speed, angle, 0.1)){
             telemetry.update();
