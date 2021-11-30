@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 
 public class Ninjabot
 {
@@ -60,35 +63,141 @@ public class Ninjabot
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
+    LinearOpMode control        =  null;
     private ElapsedTime period  = new ElapsedTime();
+    static final double     P_DRIVE_COEFF           = 0.0125;
 
     /* Constructor */
-    public Ninjabot(){
+    public Ninjabot(HardwareMap map, LinearOpMode ctrl){
+        init(map, ctrl);
+    }
+    public void init(HardwareMap ahwMap, LinearOpMode ctrl )
+    {
+        // Save reference to Hardware map
+        hwMap   = ahwMap;
+        control = ctrl;
+
+        // Define and Initialize Motors
+        leftDrive = hwMap.get(DcMotor.class, "right");
+        rightDrive = hwMap.get(DcMotor.class, "left");
+        //leftArm    = hwMap.get(DcMotor.class, "left_arm");
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        rightDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+
+        // Set all motors to zero power
+        setDriveMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER, 0.0 );
+
+        gyro = hwMap.get( BNO055IMU.class, "imu");
+        //gyroLastAngles = new Orientation();
+        //gyroGlobalAngle = 0.0;
+    }
+
+
+    public void setDriveTargets( int fr_dist, int fl_dist, int br_dist, int bl_dist )
+    {
+        leftDrive.setTargetPosition( leftDrive.getCurrentPosition() + fr_dist );
+        rightDrive.setTargetPosition( rightDrive.getCurrentPosition()  + fl_dist );
+    }
+
+    public void driveTo(double distance,int dir)
+    {
+        int clicks = driveInchesToClicks( distance );
+        switch( dir )
+        {                     // displacements: f_right    f_left     b_right    b_left
+            case FORWARD     : setDriveTargets( +clicks, +clicks, +clicks, +clicks); break;
+            case RIGHT       : setDriveTargets( +clicks, -clicks, -clicks, +clicks); break;
+            case BACKWARD    : setDriveTargets( -clicks, -clicks, -clicks, -clicks); break;
+            case LEFT        : setDriveTargets( -clicks, +clicks, +clicks, -clicks); break;
+            case ROTATE_LEFT : setDriveTargets( -clicks, +clicks, -clicks, +clicks); break;
+            case ROTATE_RIGHT: setDriveTargets( +clicks, -clicks, +clicks, -clicks); break;
+        }
+    }
+
+    public boolean targetReached()
+    {   // get the average distance left to travel of all wheels (in ticks)
+        int average = Math.abs(leftDrive.getTargetPosition() - leftDrive.getCurrentPosition());
+        average += Math.abs(rightDrive.getTargetPosition() - rightDrive.getCurrentPosition());
+        average = average / 2;
+        // must be 'reached' if less than 50
+        return (average < 50);
+    }
+
+    public boolean driveIsBusy()
+    {
+        return( leftDrive.isBusy() || rightDrive.isBusy());
+    }
+
+
+    public void setDriveMode( DcMotor.RunMode mode, double power )
+    {
+        leftDrive.setPower(power);
+        leftDrive.setMode(mode);
+        rightDrive.setPower(power);
+        rightDrive.setMode(mode);
+    }
+
+    public void driveSetPower( double leftPower, double rightPower )
+    {
+        leftDrive.setPower(  leftPower );
+        rightDrive.setPower( rightPower );
+    }
+
+    public int driveInchesToClicks( double dist )
+    {
+        double circumference   = 3.14 * WHEEL_DIAMETER;  //pi * diameter
+        double rotationsNeeded = dist / circumference;
+        return((int)(rotationsNeeded * DRIVE_MOTOR_TICK_COUNTS ));
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
+    public void init(HardwareMap ahwMap);
+    public void gyroTurn(double speed, double angle){
+        while (opModeIsActive() && !onHeading(speed, angle, 0.1)){
+            telemetry.update();
+        }
+    }
+    //as given
+    boolean onHeading(double speed, double angle, double PCoeff){
+        double error;
+        double steer;
+        boolean onTarget = false;
+        double leftSpeed;
+        double rightSpeed;
 
-        // Define and Initialize Motors
-        leftDrive  = hwMap.get(DcMotor.class, "LD");
-        rightDrive = hwMap.get(DcMotor.class, "RD");
-        motDrive = hwMap.get(DcMotor.class, "Lift") ;
-        claw = hwMap.get(Servo.class, "claw");
-        spinner = hwMap.get(DcMotor.class, "Spin") ;
+        error = getError(angle);
 
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
+        if (Math.abs(error) <= 1){
+            steer = 0;
+            leftSpeed = 0;
+            rightSpeed =0;
+            onTarget = true;
+        }
+        else{
+            steer       = getSteer(error, PCoeff);
+            rightSpeed  = speed * steer;
+            leftSpeed   = -rightSpeed;
+        }
 
+        leftDrive.setPower(leftSpeed);
+        rightDrive.setPower(rightSpeed);
 
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry.addData("Target", "%5.2f", angle);
+        telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+        telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
 
+        return onTarget;
+    }
+
+    public double getError(double targetAngle){
+        double robotError;
+
+        robotError = 1 ; // targetAngle - gyro.getIntergratedZValue();
+        while(robotError > 180)         robotError -= 360;
+        while(robotError <= 180)        robotError += 360;
+        return robotError;
+    }
+
+    public double getSteer(double error, double PCoeff){
+        return Range.clip(error * PCoeff, -1, 1);
     }
 }
