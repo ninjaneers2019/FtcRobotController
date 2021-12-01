@@ -9,6 +9,16 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+
+
 public class Ninjabot
 {
 
@@ -54,74 +64,69 @@ public class Ninjabot
         leftDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
 
-        // Set all motors to zero power
-        setDriveMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER, 0.0 );
-
         gyro = hwMap.get( BNO055IMU.class, "imu");
         //gyroLastAngles = new Orientation();
         //gyroGlobalAngle = 0.0;
     }
 
 
-    public void setDriveTargets( int fr_dist, int fl_dist, int br_dist, int bl_dist )
-    {
-        leftDrive.setTargetPosition( leftDrive.getCurrentPosition() + fr_dist );
-        rightDrive.setTargetPosition( rightDrive.getCurrentPosition()  + fl_dist );
-    }
-
-    public void driveTo(double distance,int dir)
-    {
-        int clicks = driveInchesToClicks( distance );
-        switch(dir)
-        {                     // displacements: f_right    f_left     b_right    b_left
-            case FORWARD     : setDriveTargets( +clicks, +clicks, +clicks, +clicks); break;
-            case RIGHT       : setDriveTargets( +clicks, -clicks, -clicks, +clicks); break;
-            case BACKWARD    : setDriveTargets( -clicks, -clicks, -clicks, -clicks); break;
-            case LEFT        : setDriveTargets( -clicks, +clicks, +clicks, -clicks); break;
-            case ROTATE_LEFT : setDriveTargets( -clicks, +clicks, -clicks, +clicks); break;
-            case ROTATE_RIGHT: setDriveTargets( +clicks, -clicks, +clicks, -clicks); break;
-        }
-    }
-
-    public boolean targetReached()
-    {   // get the average distance left to travel of all wheels (in ticks)
-        int average = Math.abs(leftDrive.getTargetPosition() - leftDrive.getCurrentPosition());
-        average += Math.abs(rightDrive.getTargetPosition() - rightDrive.getCurrentPosition());
-        average = average / 2;
-        // must be 'reached' if less than 50
-        return (average < 50);
-    }
-
-    public boolean driveIsBusy()
-    {
-        return( leftDrive.isBusy() || rightDrive.isBusy());
-    }
-
-
-    public void setDriveMode( DcMotor.RunMode mode, double power )
-    {
-        leftDrive.setPower(power);
-        leftDrive.setMode(mode);
-        rightDrive.setPower(power);
-        rightDrive.setMode(mode);
-    }
-
-    public void driveSetPower( double leftPower, double rightPower )
-    {
-        leftDrive.setPower(  leftPower );
-        rightDrive.setPower( rightPower );
-    }
-
-    public int driveInchesToClicks( double dist )
-    {
-        double circumference   = 3.14 * WHEEL_DIAMETER;  //pi * diameter
-        double rotationsNeeded = dist / circumference;
-        return((int)(rotationsNeeded * DRIVE_MOTOR_TICK_COUNTS ));
-    }
 
     public void gyroTurn(double speed, double angle){
-        while (opModeIsActive() && !onHeading(speed, angle, 0.1)){
-            telemetry.update();
+        while (control.opModeIsActive() && !gyroOnHeading(speed, angle, 0.1)){
+            control.telemetry.update();
         }
     }
+
+    boolean gyroOnHeading(double speed, double angle, double PCoeff)
+    {
+        double  error;
+        double  steer;
+        boolean onTarget = false;
+        double  leftSpeed;
+        double  rightSpeed;
+
+        error = gyroGetError(angle);
+
+        if (Math.abs(error) <= 1)
+        {
+            steer = 0.0;
+            leftSpeed  = 0.0;
+            rightSpeed = 0.0;
+            onTarget = true;
+        }
+        else
+        {
+            steer = gyroGetSteer(error, PCoeff);
+            rightSpeed  = speed * steer;
+            leftSpeed   = -rightSpeed;
+        }
+
+        driveSetPower( leftSpeed, rightSpeed );
+
+        control.telemetry.addData("Target", "%5.2f", angle);
+        control.telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+        control.telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+
+        return onTarget;
+    }
+    public double gyroGetError(double targetAngle)
+    {
+        double robotError;
+
+        // calculate error in -179 to +180 range  (
+        robotError = targetAngle - gyro.getIntergratedZValue();
+        while (robotError > 180)  robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
+    }
+    public double gyroGetSteer(double error, double PCoeff)
+    {
+        return Range.clip(error * PCoeff, -1, 1);
+    }
+    public void driveSetPower( double leftPower, double rightPower )
+    {
+        rightDrive.setPower(rightPower);
+        leftDrive.setPower(leftPower);
+    }
+
 }

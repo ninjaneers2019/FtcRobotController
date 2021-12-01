@@ -76,6 +76,5 @@ public class Remote_Control extends LinearOpMode {
                 gyroTurn(0.6, 360);
             }
         }
-        }
     }
 }
