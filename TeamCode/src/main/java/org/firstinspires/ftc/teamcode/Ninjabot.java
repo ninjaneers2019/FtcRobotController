@@ -70,7 +70,6 @@ public class Ninjabot
     }
 
 
-
     public void gyroTurn(double speed, double angle){
         while (control.opModeIsActive() && !gyroOnHeading(speed, angle, 0.1)){
             control.telemetry.update();
