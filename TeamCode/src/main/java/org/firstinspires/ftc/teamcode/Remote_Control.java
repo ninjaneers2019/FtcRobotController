@@ -64,6 +64,7 @@ public class Remote_Control extends LinearOpMode {
             //else{
             //    maxSpeed = 0.4;
             //}
+            maxSpeed = 1;
 
             leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
             rightPower  = Range.clip(yAxis - xAxis, -maxSpeed, maxSpeed);
