@@ -39,9 +39,9 @@ public class Remote_Control extends LinearOpMode {
             boolean leftArrow = gamepad1.dpad_left;
             boolean rightArrow = gamepad1.dpad_right;
             boolean armUp = gamepad1.y;
-            boolean armDown = gamepad1.b;
+            boolean armDown = gamepad1.a;
             boolean clawClose = gamepad1.x;
-            boolean clawOpen = gamepad1.a;
+            boolean clawOpen = gamepad1.b;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
             double maxSpeed = 0.8;
@@ -71,30 +71,31 @@ public class Remote_Control extends LinearOpMode {
 
             //buttons
             //making the robot face the cardinal directions of the board when buttons pressed
-            if (upArrow) {
-                robot.gyroTurn(0.6, 0);
+            if (upArrow == true) {
+                robot.gyroTurn(0.8, 0);
             }
-            if (downArrow){
-                robot.gyroTurn(0.6, 90);
+            if (downArrow ==true){
+                robot.gyroTurn(0.8, 90);
             }
-            if (leftArrow){
+            if (leftArrow == true){
                 robot.gyroTurn(0.6, 270);
             }
-            if (rightArrow){
+            if (rightArrow == true){
                 robot.gyroTurn(0.6, 360);
             }
-            if (armUp){
-                robot.liftArm.setPower(0.6);
-            }
-            if (armDown){
+            if (armUp == true){
                 robot.liftArm.setPower(-0.6);
             }
-            if (clawOpen){
+            if (armDown == true){
+                robot.liftArm.setPower(0.6);
+            }
+            if (clawOpen == true){
                 robot.claw.setPosition(0.6);
             }
-            if (clawClose){
+            if (clawClose == true){
                 robot.claw.setPosition(-0.6);
             }
+            sleep(10);
         }
     }
 }
