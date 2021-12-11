@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -11,8 +10,6 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "Basic: Remote Control", group = "Linear Opmode")
 public class Remote_Control extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
 
     @Override
     public void runOpMode() {
@@ -34,7 +31,7 @@ public class Remote_Control extends LinearOpMode {
             double leftPower;
             double rightPower;
 
-            //buttons and gampad on remote
+            //buttons and game pad on remote
             float yAxis = -gamepad1.left_stick_y;
             float xAxis = gamepad1.left_stick_x;
             boolean upArrow = gamepad1.dpad_up;
@@ -61,14 +58,14 @@ public class Remote_Control extends LinearOpMode {
             //else{
             //    maxSpeed = 0.4;
             //}';
-            maxSpeed = 1;
+            maxSpeed = 0.8;
 
             leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
             rightPower  = Range.clip(yAxis - xAxis, -maxSpeed, maxSpeed);
 
             //joysticks
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
+            robot.leftDrive.setPower(leftPower);
+            robot.rightDrive.setPower(rightPower);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
@@ -76,29 +73,29 @@ public class Remote_Control extends LinearOpMode {
 
 
             //buttons
-            //makeing the robot face the cardinal directions of the board when buttons pressed
-            if (upArrow == true) {
+            //making the robot face the cardinal directions of the board when buttons pressed
+            if (upArrow) {
                 robot.gyroTurn(0.6, 0);
             }
-            if (downArrow == true){
+            if (downArrow){
                 robot.gyroTurn(0.6, 90);
             }
-            if (leftArrow == true){
+            if (leftArrow){
                 robot.gyroTurn(0.6, 270);
             }
-            if (rightArrow == true){
+            if (rightArrow){
                 robot.gyroTurn(0.6, 360);
             }
-            if (armUp == true){
+            if (armUp){
                 robot.liftArm.setPower(0.6);
             }
-            if (armDown == true){
+            if (armDown){
                 robot.liftArm.setPower(-0.6);
             }
-            if (clawOpen == true){
+            if (clawOpen){
                 robot.claw.setPosition(0.6);
             }
-            if (clawClose == true){
+            if (clawClose){
                 robot.claw.setPosition(-0.6);
             }
         }
