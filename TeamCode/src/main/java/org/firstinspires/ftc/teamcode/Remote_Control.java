@@ -55,15 +55,15 @@ public class Remote_Control extends LinearOpMode {
             double maxSpeed;
 
             //determining the power based on degree on angle on joystick
-            if (medSpeed <= angle & angle <= -medSpeed){
-                maxSpeed = 0.8;
-            }
-            else if (lowSpeed <= angle & angle <= -lowSpeed){
-                maxSpeed = 0.6;
-            }
-            else{
-                maxSpeed = 0.4;
-            }
+            //if (medSpeed <= angle & angle <= -medSpeed){
+            //    maxSpeed = 0.8;
+            //}
+            //else if (lowSpeed <= angle & angle <= -lowSpeed){
+            //    maxSpeed = 0.6;
+            //}
+            //else{
+            //    maxSpeed = 0.4;
+            //}
 
             leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
             rightPower  = Range.clip(yAxis - xAxis, -maxSpeed, maxSpeed);
