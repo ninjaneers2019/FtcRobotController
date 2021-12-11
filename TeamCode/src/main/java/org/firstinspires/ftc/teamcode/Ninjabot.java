@@ -58,7 +58,7 @@ public class Ninjabot
 
         leftDrive = hwMap.get(DcMotor.class, "RD");
         rightDrive = hwMap.get(DcMotor.class, "LD");
-        //claw = hwMap.get();
+        claw = hwMap.get(Servo.class,"claw");
         liftArm = hwMap.get(DcMotor.class, "arm");
         spinner = hwMap.get(DcMotor.class, "spinner");
 

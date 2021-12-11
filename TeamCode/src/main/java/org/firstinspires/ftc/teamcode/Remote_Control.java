@@ -38,15 +38,13 @@ public class Remote_Control extends LinearOpMode {
             boolean downArrow = gamepad1.dpad_down;
             boolean leftArrow = gamepad1.dpad_left;
             boolean rightArrow = gamepad1.dpad_right;
-            boolean armUp = gamepad1.a;
-            boolean armDown = gamepad1.x;
-            boolean clawClose = gamepad1.b;
-            boolean clawOpen = gamepad1.y;
+            boolean armUp = gamepad1.y;
+            boolean armDown = gamepad1.b;
+            boolean clawClose = gamepad1.x;
+            boolean clawOpen = gamepad1.a;
 
-            //double angle = yAxis/xAxis;
-            //double medSpeed = 0.2679;
-            //double lowSpeed = 0.0875;
-            double maxSpeed;
+            //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
+            double maxSpeed = 0.8;
 
             //determining the power based on degree on angle on joystick
             //if (medSpeed <= angle & angle <= -medSpeed){
@@ -57,8 +55,7 @@ public class Remote_Control extends LinearOpMode {
             //}
             //else{
             //    maxSpeed = 0.4;
-            //}';
-            maxSpeed = 0.8;
+            //}
 
             leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
             rightPower  = Range.clip(yAxis - xAxis, -maxSpeed, maxSpeed);
