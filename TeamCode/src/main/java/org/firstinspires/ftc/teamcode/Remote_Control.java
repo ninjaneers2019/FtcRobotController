@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.*;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -17,14 +16,14 @@ public class Remote_Control extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        Ninjabot robot;
+        robot = new Ninjabot(hardwareMap, this);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        leftDrive = hardwareMap.get(DcMotor.class, "LD");
-        rightDrive = hardwareMap.get(DcMotor.class, "RD");
-
-        leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
         runtime.reset();
@@ -32,8 +31,6 @@ public class Remote_Control extends LinearOpMode {
         ModernRoboticsI2cGyro gyro = null;
 
         while (opModeIsActive()){
-            Ninjabot robot;
-            robot = new Ninjabot(hardwareMap, this);
             double leftPower;
             double rightPower;
 
@@ -49,9 +46,9 @@ public class Remote_Control extends LinearOpMode {
             boolean clawClose = gamepad1.b;
             boolean clawOpen = gamepad1.y;
 
-            double angle = yAxis/xAxis;
-            double medSpeed = 0.2679;
-            double lowSpeed = 0.0875;
+            //double angle = yAxis/xAxis;
+            //double medSpeed = 0.2679;
+            //double lowSpeed = 0.0875;
             double maxSpeed;
 
             //determining the power based on degree on angle on joystick
@@ -63,7 +60,7 @@ public class Remote_Control extends LinearOpMode {
             //}
             //else{
             //    maxSpeed = 0.4;
-            //}
+            //}';
             maxSpeed = 1;
 
             leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
