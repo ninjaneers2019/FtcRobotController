@@ -7,9 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -18,14 +15,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 
-
 public class Ninjabot
 {
 
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
     public Servo claw     = null;
-    public DcMotor motDrive = null;
+    public DcMotor liftArm = null;
     public DcMotor spinner = null;
 
     BNO055IMU gyro = null;
@@ -44,38 +40,43 @@ public class Ninjabot
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     LinearOpMode control        =  null;
+    public Orientation gyroLastAngle = null;
     private ElapsedTime period  = new ElapsedTime();
     static final double     P_DRIVE_COEFF           = 0.0125;
 
     /* Constructor */
-    public Ninjabot(HardwareMap map, LinearOpMode ctrl){
+    public Ninjabot(HardwareMap map, LinearOpMode ctrl ){
         init(map, ctrl);
     }
+
+    // save the location of everything to the hardware map
     public void init(HardwareMap ahwMap, LinearOpMode ctrl )
     {
         // Save reference to Hardware map
         hwMap   = ahwMap;
         control = ctrl;
 
-        // Define and Initialize Motors
-        leftDrive = hwMap.get(DcMotor.class, "right");
-        rightDrive = hwMap.get(DcMotor.class, "left");
-        //leftArm    = hwMap.get(DcMotor.class, "left_arm");
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        rightDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        leftDrive = hwMap.get(DcMotor.class, "RD");
+        rightDrive = hwMap.get(DcMotor.class, "LD");
+        //claw = hwMap.get();
+        liftArm = hwMap.get(DcMotor.class, "arm");
+        spinner = hwMap.get(DcMotor.class, "spinner");
+
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
 
         gyro = hwMap.get( BNO055IMU.class, "imu");
-        //gyroLastAngles = new Orientation();
+        gyroLastAngle = new Orientation();
         //gyroGlobalAngle = 0.0;
     }
 
-
+    // as given
     public void gyroTurn(double speed, double angle){
         while (control.opModeIsActive() && !gyroOnHeading(speed, angle, 0.1)){
             control.telemetry.update();
         }
     }
-
+    //as given
     boolean gyroOnHeading(double speed, double angle, double PCoeff)
     {
         double  error;
@@ -108,20 +109,33 @@ public class Ninjabot
 
         return onTarget;
     }
+    //as given
     public double gyroGetError(double targetAngle)
     {
         double robotError;
 
         // calculate error in -179 to +180 range  (
-        robotError = targetAngle - gyro.getIntergratedZValue();
-        while (robotError > 180)  robotError -= 360;
-        while (robotError <= -180) robotError += 360;
+        //robotError = targetAngle - gyro.getIntergratedZValue();
+        //while (robotError > 180)  robotError -= 360;
+        //while (robotError <= -180) robotError += 360;
+        Orientation angles =
+                gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
+                        AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - gyroLastAngle.firstAngle;
+
+        if      (deltaAngle < -180)  deltaAngle += 360;
+        else if (deltaAngle >  180)  deltaAngle -= 360;
+
+        robotError=0; // this needs to be deleted later
         return robotError;
     }
+    //as given
     public double gyroGetSteer(double error, double PCoeff)
     {
         return Range.clip(error * PCoeff, -1, 1);
     }
+    //as given
     public void driveSetPower( double leftPower, double rightPower )
     {
         rightDrive.setPower(rightPower);
