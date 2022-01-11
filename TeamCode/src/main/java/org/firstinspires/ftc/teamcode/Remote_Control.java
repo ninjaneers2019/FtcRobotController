@@ -19,8 +19,7 @@ public class Remote_Control extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         waitForStart();
         runtime.reset();

@@ -146,7 +146,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             else{
                 spinPower = 0;
             }
-
+/*
             if (crane1 = true) {
                 cranePower = 1;
             } else if (crane2 = true) {
@@ -154,7 +154,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             } else {
                 cranePower = 0;
             }
-
+*/
             // pullPower = Range.clip(pull, -1.0, 1.0);
 
             if (gamepad1.dpad_left)
