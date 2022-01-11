@@ -87,13 +87,16 @@ public class Remote_Control extends LinearOpMode {
                 robot.liftArm.setPower(-0.6);
             }
             if (armDown == true){
-                robot.liftArm.setPower(0.6);
+                robot.liftArm.setPower(1);
             }
             if (clawOpen == true){
                 robot.claw.setPosition(0.6);
             }
             if (clawClose == true){
                 robot.claw.setPosition(-0.6);
+            }
+            if (!armUp){
+                robot.liftArm.setPower(0);
             }
             sleep(10);
         }
