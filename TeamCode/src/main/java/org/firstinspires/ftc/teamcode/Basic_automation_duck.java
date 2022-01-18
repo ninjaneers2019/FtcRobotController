@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode;
+// altered by michael 12/0/2022
+import android.provider.Telephony;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -102,14 +104,14 @@ public class Basic_automation_duck extends LinearOpMode {
 
             double cal = 26/4;//11+15
 
-            encoderDrive(DRIVE_SPEED,  2,  2, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-            encoderDrive(TURN_SPEED,   2, -2, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-            encoderDrive(DRIVE_SPEED, -cal, -cal , 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-
-
-
+            //encoderDrive(DRIVE_SPEED,  2,  2, 40.0);  // S1: Forward 47 Inches with 5 Sec timeout
+            //encoderDrive(TURN_SPEED,   2, -2, 2.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+            //encoderDrive(DRIVE_SPEED, -4, -4 , 40.0);  // S3: Reverse 24 Inches with 4 Sec timeout
             //encoderSpin(DRIVE_SPEED, 8,10.0);
-           //encoderDrive(DRIVE_SPEED, -1,-1,2.0);
+
+            // 6 = 34in   
+
+            encoderDrive(DRIVE_SPEED, 6,6,2.0);
 
             //encoderSpin(DRIVE_SPEED, 4,10.0);
             //encoderDrive(DRIVE_SPEED,200,20, 2.0);
@@ -146,8 +148,13 @@ public class Basic_automation_duck extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            leftDrive.setPower(Math.abs(speed));
-            rightDrive.setPower(Math.abs(speed));
+            //leftDrive.setPower(Math.abs(speed));
+            //rightDrive.setPower(Math.abs(speed));
+
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed);
+
+
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits

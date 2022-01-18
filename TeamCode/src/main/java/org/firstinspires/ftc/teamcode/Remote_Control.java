@@ -38,13 +38,13 @@ public class Remote_Control extends LinearOpMode {
             boolean downArrow = gamepad1.dpad_down;
             boolean leftArrow = gamepad1.dpad_left;
             boolean rightArrow = gamepad1.dpad_right;
-            boolean armUp = gamepad1.y;
-            boolean armDown = gamepad1.a;
+            boolean armUp = gamepad1.y;//this doing anything
+            boolean armDown = gamepad1.a;//
             boolean clawClose = gamepad1.x;
             boolean clawOpen = gamepad1.b;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
-            double maxSpeed = 0.8;
+            double maxSpeed = 0.6;
             boolean spinPower = false;
             double speedspin = 0;
             spinPower = gamepad1.left_bumper;
@@ -60,33 +60,8 @@ public class Remote_Control extends LinearOpMode {
             robot.spinner.setPower(speedspin);
 
 
-            //double arm_angle = 0;
-          // if(gamepad1.left_trigger == true){
-          //      arm_angle = 0.6;
-          //  }
-         //   else if(gamepad1.right_trigger == true){
-         //       arm_angle = -0.6;
-         //   }
-         //   else{
-        //        arm_angle = 0;
-         //   }
 
-         //   robot.liftArm.setPower(arm_angle);
-
-
-
-
-            //determining the power based on degree on angle on joystick
-            //if (medSpeed <= angle & angle <= -medSpeed){
-            //    maxSpeed = 0.8;
-            //}
-            //else if (lowSpeed <= angle & angle <= -lowSpeed){
-            //    maxSpeed = 0.6;
-            //}
-            //else{
-            //    maxSpeed = 0.4;
-            //}///////////////////////////////////////
-            double upPower = Range.clip( gamepad1.left_trigger , -maxSpeed, maxSpeed);
+            double upPower = Range.clip( gamepad1.left_trigger , -maxSpeed, maxSpeed);//might need an increase
             double downPower = Range.clip( gamepad1.right_trigger, -maxSpeed, maxSpeed);
             if(upPower > 0){
 
@@ -96,14 +71,26 @@ public class Remote_Control extends LinearOpMode {
             }else{
                 robot.liftArm.setPower(0);
             }
+            double boost = 0;
             //robot.liftArm.setPower();///////////////////////
+            if (armDown == true){
+                //  robot.liftArm.setPower(0.6);//0.6
+                boost = 0.4;
+            }
+            if(armUp == true){
+                boost = -0.4;
+            }
 
-            leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
-            rightPower  = Range.clip(yAxis - xAxis, -maxSpeed, maxSpeed);
+
+            leftPower   = Range.clip(yAxis + xAxis, -maxSpeed-boost, maxSpeed+boost);
+            rightPower  = Range.clip(yAxis - xAxis, -maxSpeed-boost, maxSpeed+boost);
 
             //joysticks
-            robot.leftDrive.setPower(leftPower);
-            robot.rightDrive.setPower(rightPower);
+          //  robot.leftDrive.setPower(leftPower);
+          //  robot.rightDrive.setPower(rightPower);
+
+            robot.leftDrive.setPower(rightPower);
+            robot.rightDrive.setPower(leftPower);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
@@ -124,18 +111,16 @@ public class Remote_Control extends LinearOpMode {
             if (rightArrow == true){
                 robot.gyroTurn(0.6, 360);
             }
-            if (armUp == true){
-                robot.liftArm.setPower(-0.7);//-0.6
-            }
-            if (armDown == true){
-                robot.liftArm.setPower(0.6);//0.6
-            }
+            //if (armUp == true){
+            //    robot.liftArm.setPower(-0.7);//-0.6
+            //}
+
 
             if (clawOpen == true){
                 robot.claw.setPosition(0.8);
             }
             if (clawClose == true){
-                robot.claw.setPosition(-0.2);//this claw position
+                robot.claw.setPosition(0.1);//this claw position was -0.2
             }
 
 
