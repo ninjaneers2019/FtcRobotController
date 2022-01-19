@@ -56,7 +56,7 @@ public class Ninjabot
     private static final int BACKWARD = 3;
     private static final int ROTATE_LEFT = 5;
     private static final int ROTATE_RIGHT = 6;
-    public static final double WheelD = 3.6;
+    public static final double WheelD = 3.625;
 
 
     BNO055IMU gyro = null;
@@ -97,8 +97,8 @@ public class Ninjabot
         liftArm = hwMap.get(DcMotor.class, "arm");
         spinner = hwMap.get(DcMotor.class, "spinner");
 
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        rightDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
 
         gyro = hwMap.get( BNO055IMU.class, "imu");
         gyroLastAngle = new Orientation();

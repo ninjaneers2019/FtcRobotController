@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+
 @Autonomous
 public class DFWRR extends LinearOpMode{
     @Override
@@ -38,17 +39,18 @@ public class DFWRR extends LinearOpMode{
         //
         //
         //
-        robot.driveTo(robot.convert(34), FORWARD);
-        while (!robot.targetReached() && opModeIsActive())
-            robot.updateWheelTelemetry();
-        sleep(2100);
-        robot.driveTo(950, ROTATE_LEFT);
-        while (!robot.targetReached() && opModeIsActive())
-            robot.updateWheelTelemetry();
-        robot.driveTo(3000, BACKWARD);
-        while (!robot.targetReached() && opModeIsActive())
-            robot.updateWheelTelemetry();
-        robot.driveTo(robot.convert(2), ROTATE_RIGHT);
+        //
+        //
+        robot.driveTo(robot.convert(10), FORWARD);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+
+        //robot.driveTo(950, ROTATE_LEFT);
+        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+
+        //robot.driveTo(3000, BACKWARD);
+        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+
+        //robot.driveTo(robot.convert(2), ROTATE_RIGHT);
     }
 
 
