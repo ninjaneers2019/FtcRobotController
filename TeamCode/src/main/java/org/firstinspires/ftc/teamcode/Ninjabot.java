@@ -52,6 +52,13 @@ public class Ninjabot
     public DcMotor liftArm = null;
     public DcMotor spinner = null;
 
+    private static final int FORWARD = 1;
+    private static final int BACKWARD = 3;
+    private static final int ROTATE_LEFT = 5;
+    private static final int ROTATE_RIGHT = 6;
+    public static final double WheelD = 3.625;
+
+
     BNO055IMU gyro = null;
 
     static final int REV_ROBOTICS_HDHEX_MOTOR   = 28; // ticks per rotation
@@ -169,5 +176,43 @@ public class Ninjabot
         rightDrive.setPower(rightPower);
         leftDrive.setPower(leftPower);
     }
+
+    public int convert(int inches) {
+        // wheel circumferance / 360 = distance per degree        distanc / distance per degree
+        double inchToDegrees = inches / (WheelD * 3.14159 / 560);
+        return (int) inchToDegrees;
+    }
+
+    public void driveTo(int distance, int dir) {
+        if (dir == FORWARD) {
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
+        }     // to going forward
+        else if (dir == BACKWARD) {
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
+        }   // to reversing
+        else if (dir == ROTATE_LEFT) {
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
+        }     // to rotate the left wheels
+        else if (dir == ROTATE_RIGHT) {
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
+        }     // to rotate the right wheels
+    }
+
+    public boolean targetReached() {
+        int average = Math.abs(leftDrive.getTargetPosition() - leftDrive.getCurrentPosition());
+        average += Math.abs(rightDrive.getTargetPosition() - rightDrive.getCurrentPosition());
+        average = average / 2;
+        return (average < 50);
+    }
+    public void updateWheelTelemetry() {
+        control.telemetry.addData("leftDrive", leftDrive.getTargetPosition() - leftDrive.getCurrentPosition());
+        control.telemetry.addData("rightDrive", rightDrive.getTargetPosition() - rightDrive.getCurrentPosition());
+        control.telemetry.update();
+    }
+
 
 }
