@@ -114,9 +114,12 @@ public class Remote_Control extends LinearOpMode {
             //making the robot face the cardinal directions of the board when buttons pressed
             if (upArrow == true) {
                 robot.gyroTurn(0.8, 0);
+                telemetry.addData("move2",".8");
+
             }
             if (downArrow ==true){
                 robot.gyroTurn(0.8, 90);
+                telemetry.update();
             }
             if (leftArrow == true){
                 robot.gyroTurn(0.6, 270);
