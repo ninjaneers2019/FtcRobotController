@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous
 public class DFW extends LinearOpMode{
     Ninjabot robot;
+
     @Override
     public void runOpMode() {
         robot = new Ninjabot(hardwareMap, this);
@@ -16,8 +17,14 @@ public class DFW extends LinearOpMode{
         int ROTATE_LEFT = 5;
         int ROTATE_RIGHT = 6;
 
+
         Ninjabot robot;
         robot = new Ninjabot(hardwareMap, this);
+
+        waitForStart();
+        telemetry.addData("Status", "ClawStatus");
+        telemetry.update();
+        robot.claw.setPosition(0);
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -36,6 +43,16 @@ public class DFW extends LinearOpMode{
 
 //set power for all wheels indefinitely
         //Put moves here
+
+
+            //robot.gyroDrive ( 0.2, 62.0, 0 ) ;
+
+            // drop wooble
+            robot.claw.setPosition(0.8);
+            sleep(500);
+
+            telemetry.addData("Status", "ClawStatus2");
+            telemetry.update();
 
         robot.driveTo(robot.convert(10), FORWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
