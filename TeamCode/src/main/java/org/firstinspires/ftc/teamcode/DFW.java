@@ -55,7 +55,7 @@ public class DFW extends LinearOpMode{
 
         robot.claw.setPosition(0.8); //claw open, position 0 is close
         sleep(500);
-        telemetry.addData("Status", "ClawStatus2");
+        telemetry.addData("Status", "Open");
         telemetry.update();
 
         robot.driveTo(950, ROTATE_LEFT); //180 degree turn
