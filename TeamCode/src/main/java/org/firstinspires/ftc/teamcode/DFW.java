@@ -48,17 +48,18 @@ public class DFW extends LinearOpMode{
             //robot.gyroDrive ( 0.2, 62.0, 0 ) ;
 
             // drop wooble
-            robot.claw.setPosition(0.8);
-            sleep(500);
 
-            telemetry.addData("Status", "ClawStatus2");
-            telemetry.update();
 
         robot.driveTo(robot.convert(10), FORWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        //robot.driveTo(950, ROTATE_LEFT);
-        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        robot.claw.setPosition(0.8); //claw open, position 0 is close
+        sleep(500);
+        telemetry.addData("Status", "ClawStatus2");
+        telemetry.update();
+
+        robot.driveTo(950, ROTATE_LEFT); //180 degree turn
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
         //robot.driveTo(3000, BACKWARD);
         //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
