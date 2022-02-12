@@ -56,7 +56,7 @@ public class Ninjabot
     private static final int BACKWARD = 3;
     private static final int ROTATE_LEFT = 5;
     private static final int ROTATE_RIGHT = 6;
-    public static final double WheelD = 3.625;
+    public static final double WheelD = 3.533;
 
 
     BNO055IMU gyro = null;
@@ -65,7 +65,7 @@ public class Ninjabot
     static final int REV_ROBOTICS_HDHEX_20_to_1 = REV_ROBOTICS_HDHEX_MOTOR * 20;
 
     static final int DRIVE_MOTOR_TICK_COUNTS    = REV_ROBOTICS_HDHEX_20_to_1;
-    static final double WHEEL_DIAMETER          = 4.0;
+    static final double WHEEL_DIAMETER          = 3.6;
 
     static final int REV_ROBOTICS_COREHEX_MOTOR   = 4; // ticks per rotation
     static final int REV_ROBOTICS_COREHEX_72_to_1 = REV_ROBOTICS_COREHEX_MOTOR * 72;
@@ -179,7 +179,7 @@ public class Ninjabot
 
     public int convert(int inches) {
         // wheel circumferance / 360 = distance per degree        distanc / distance per degree
-        double inchToDegrees = inches / (WheelD * 3.14159 / 560);
+        double inchToDegrees = inches / (WheelD * 3.14159 / 360);
         return (int) inchToDegrees;
     }
 
