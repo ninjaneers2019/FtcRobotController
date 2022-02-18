@@ -58,6 +58,10 @@ public class Ninjabot
     private static final int ROTATE_RIGHT = 6;
     public static final double WheelD = 3.533;
 
+    private static final int ROBOT_WIDTH = 0;
+    private static final int ROBOT_LENGTH= 0;
+
+
 
     BNO055IMU gyro = null;
 
