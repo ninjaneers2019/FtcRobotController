@@ -46,31 +46,38 @@ public class DFW extends LinearOpMode{
 //set power for all wheels indefinitely
         //Put moves here
 
+        //Robot will be starting right infront of the docking platform
+        robot.driveTo(robot.convert(30), FORWARD);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-            //robot.gyroDrive ( 0.2, 62.0, 0 ) ;
-
-            // drop wooble
-
-
-        //robot.driveTo(robot.convert(10), FORWARD);
-        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-
-        //robot.claw.setPosition(0.8); //claw open, position 0 is close
-        //sleep(500);
-        //telemetry.addData("Status", "Open");
-        //telemetry.update();
-
-        //robot.driveTo(950, ROTATE_LEFT); //180 degree turn
-        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-
-        //robot.claw.setPosition(0); //position 0 is close
-        //sleep(500);
-        //telemetry.addData("Status", "close");
-        //telemetry.update();
-
-        robot.liftArm.setTargetPosition(80);
+        robot.liftArm.setTargetPosition(40); // move arm down to drop item in claw 80 is drop to floor
         robot.liftArm.setPower(1);
         robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.claw.setPosition(0.8); //claw open, position 0 is close
+        sleep(500);
+        telemetry.addData("Status", "Open");
+        telemetry.update();
+
+        robot.liftArm.setTargetPosition(0); // move arm down to drop item in claw 80 is drop to floor
+        robot.liftArm.setPower(1);
+        robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.driveTo(950, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+
+        robot.liftArm.setTargetPosition(0); // move arm up to avoid knocking item off
+        robot.liftArm.setPower(1);
+        robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+        robot.claw.setPosition(0); //position 0 is close
+        sleep(500);
+        telemetry.addData("Status", "close");
+        telemetry.update();
+
+
 
         sleep(2000);
 
@@ -80,10 +87,11 @@ public class DFW extends LinearOpMode{
 
         sleep(2000);
 
-        //robot.driveTo(3000, BACKWARD);
-        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        robot.driveTo(3000, BACKWARD);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        //robot.driveTo(robot.convert(2), ROTATE_RIGHT);
+        robot.driveTo(robot.convert(2), ROTATE_RIGHT);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
     }
 
     }
