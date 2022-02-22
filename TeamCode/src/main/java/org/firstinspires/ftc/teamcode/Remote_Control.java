@@ -34,17 +34,19 @@ public class Remote_Control extends LinearOpMode {
             //buttons and game pad on remote
             float yAxis = -gamepad1.left_stick_y;
             float xAxis = gamepad1.left_stick_x;
+            boolean boost = gamepad1.a;
+            boolean slow = gamepad1.y;
             boolean upArrow = gamepad1.dpad_up;
             boolean downArrow = gamepad1.dpad_down;
             boolean leftArrow = gamepad1.dpad_left;
             boolean rightArrow = gamepad1.dpad_right;
-            boolean armUp = gamepad1.y;
-            boolean armDown = gamepad1.a;
             boolean clawClose = gamepad1.x;
             boolean clawOpen = gamepad1.b;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
-            double maxSpeed = 0.8;
+            double maxSpeed = 0.6;
+            double BOOST = 0;
+            double minSpeed = 0;
             boolean spinPower = false;
             double speedspin = 0;
             spinPower = gamepad1.left_bumper;
@@ -98,8 +100,23 @@ public class Remote_Control extends LinearOpMode {
             }
             //robot.liftArm.setPower();///////////////////////
 
-            leftPower   = Range.clip(yAxis + xAxis, -maxSpeed, maxSpeed);
-            rightPower  = Range.clip(yAxis - xAxis, -maxSpeed, maxSpeed);
+
+            //If A button pressed, boost power
+            if (boost == true) {
+                BOOST = 1;
+            } else {
+                BOOST = 0;
+            }
+
+            //If Y button pressed, cull power
+            if (slow == true) {
+                minSpeed = 0.3;
+            } else {
+                minSpeed = 0;
+            }
+
+            leftPower   = Range.clip(yAxis - xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
+            rightPower  = Range.clip(yAxis + xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
 
             //joysticks
             robot.leftDrive.setPower(leftPower);
@@ -126,12 +143,6 @@ public class Remote_Control extends LinearOpMode {
             }
             if (rightArrow == true){
                 robot.gyroTurn(0.6, 360);
-            }
-            if (armUp == true){
-                robot.liftArm.setPower(-0.7);//-0.6
-            }
-            if (armDown == true){
-                robot.liftArm.setPower(0.6);//0.6
             }
 
             if (clawOpen == true){

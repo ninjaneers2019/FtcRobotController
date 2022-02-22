@@ -56,6 +56,9 @@ public class Ninjabot
     private static final int BACKWARD = 3;
     private static final int ROTATE_LEFT = 5;
     private static final int ROTATE_RIGHT = 6;
+    private static final int TANK_LEFT= 7;
+    private static final int TANK_RIGHT= 8;
+
     public static final double WheelD = 3.533;
 
     private static final int ROBOT_WIDTH = 0;
@@ -189,21 +192,27 @@ public class Ninjabot
 
     public void driveTo(int distance, int dir) {
         if (dir == FORWARD) {
-            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
-            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
         }     // to going forward
         else if (dir == BACKWARD) {
-            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
-            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
         }   // to reversing
         else if (dir == ROTATE_LEFT) {
-            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
-            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
-        }     // to rotate the left wheels
-        else if (dir == ROTATE_RIGHT) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
+        }     // to rotate the left wheels
+        else if (dir == ROTATE_RIGHT) {
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
         }     // to rotate the right wheels
+        else if (dir == TANK_LEFT) {
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
+        }
+        else if (dir == TANK_RIGHT) {
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
+        }
     }
 
     public boolean targetReached() {
@@ -217,6 +226,4 @@ public class Ninjabot
         control.telemetry.addData("rightDrive", rightDrive.getTargetPosition() - rightDrive.getCurrentPosition());
         control.telemetry.update();
     }
-
-
 }

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous
-public class DFW extends LinearOpMode{
+public class FDP extends LinearOpMode{
     Ninjabot robot;
 
     @Override
@@ -16,10 +16,9 @@ public class DFW extends LinearOpMode{
         int BACKWARD = 3;
         int ROTATE_LEFT = 5;
         int ROTATE_RIGHT = 6;
+        int TANK_LEFT= 7;
+        int TANK_RIGHT= 8;
 
-
-        Ninjabot robot;
-        robot = new Ninjabot(hardwareMap, this);
         robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
@@ -47,15 +46,16 @@ public class DFW extends LinearOpMode{
         //Put moves here
 
         //Robot will be starting right infront of the docking platform
-        robot.driveTo(robot.convert(30), FORWARD);
+        robot.driveTo(robot.convert(25 ), FORWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.liftArm.setTargetPosition(40); // move arm down to drop item in claw 80 is drop to floor
+        robot.liftArm.setTargetPosition(70); // move arm down to drop item in claw 80 is drop to floor
         robot.liftArm.setPower(1);
         robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(3000);
 
         robot.claw.setPosition(0.8); //claw open, position 0 is close
-        sleep(500);
+        sleep(1000);
         telemetry.addData("Status", "Open");
         telemetry.update();
 
@@ -63,35 +63,24 @@ public class DFW extends LinearOpMode{
         robot.liftArm.setPower(1);
         robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.driveTo(950, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot
+        robot.driveTo(robot.convert(25), BACKWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.liftArm.setTargetPosition(0); // move arm up to avoid knocking item off
-        robot.liftArm.setPower(1);
-        robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.driveTo(500, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
+        robot.driveTo(robot.convert(45), FORWARD); //drive backward towards the duck carosel
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-
-        robot.claw.setPosition(0); //position 0 is close
-        sleep(500);
-        telemetry.addData("Status", "close");
-        telemetry.update();
-
-
-
+        robot.spinner.setPower(0.5); //spinner for the duck
         sleep(2000);
+        robot.spinner.setPower(0);// turn off spinner
 
-        robot.liftArm.setTargetPosition(20);
-        robot.liftArm.setPower(0.5);
-        robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        sleep(2000);
-
-        robot.driveTo(3000, BACKWARD);
+        robot.driveTo(robot.convert(5), BACKWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.driveTo(robot.convert(2), ROTATE_RIGHT);
+        robot.driveTo(500, ROTATE_RIGHT);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-    }
 
     }
+}
