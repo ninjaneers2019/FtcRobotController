@@ -41,6 +41,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import android.graphics.drawable.GradientDrawable;
+
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 
 public class Ninjabot
@@ -52,6 +56,9 @@ public class Ninjabot
     public DcMotor liftArm = null;
     public DcMotor spinner = null;
 
+    private Orientation lastAngles = new Orientation();
+    private double currAngle = 0.0;
+
     private static final int FORWARD = 1;
     private static final int BACKWARD = 3;
     private static final int ROTATE_LEFT = 5;
@@ -60,9 +67,6 @@ public class Ninjabot
     private static final int TANK_RIGHT= 8;
 
     public static final double WheelD = 3.533;
-
-    private static final int ROBOT_WIDTH = 0;
-    private static final int ROBOT_LENGTH= 0;
 
 
 
@@ -110,6 +114,57 @@ public class Ninjabot
         gyro = hwMap.get( BNO055IMU.class, "imu");
         gyroLastAngle = new Orientation();
         //gyroGlobalAngle = 0.0;
+    }
+    public void resetAngle(){
+        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+    }
+
+    public double getAngle() {
+
+        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+
+        double deltaAngle = orientation.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle >180) {
+            deltaAngle -= 360;
+        } else if (deltaAngle <= -180){
+            deltaAngle += 360;
+        }
+
+        currAngle += deltaAngle;
+        lastAngles = orientation;
+        telemetry.addData("gyro", orientation.firstAngle);
+        return currAngle;
+    }
+
+    public void turn(double degrees){
+        resetAngle();
+        double error = degrees;
+
+        while(opModeIsActive() && Math.abs(error) > 2){
+            double motorPower = (error < 0 ? -0.3: 0.3);
+            leftDrive.setPower(motorPower);
+            rightDrive.setPower(-motorPower);
+            telemetry.addData("error", error);
+            telemetry.update();
+
+        }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+    }
+
+    public void turnTo(double degrees){
+        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+
+        double error = degrees - orientation.firstAngle;
+
+        if(error > 180) {
+            error -= 360;
+        } else if (error <= -180){
+            error += 360;
+        }
+
+        turn(error);
     }
 
     // as given
