@@ -70,7 +70,7 @@ public class Ninjabot
 
 
 
-    BNO055IMU gyro = null;
+    BNO055IMU imu;
 
     static final int REV_ROBOTICS_HDHEX_MOTOR   = 28; // ticks per rotation
     static final int REV_ROBOTICS_HDHEX_20_to_1 = REV_ROBOTICS_HDHEX_MOTOR * 20;
@@ -111,7 +111,7 @@ public class Ninjabot
         rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
 
-        gyro = hwMap.get( BNO055IMU.class, "imu");
+        imu = hwMap.get( BNO055IMU.class, "imu");
         gyroLastAngle = new Orientation();
         //gyroGlobalAngle = 0.0;
     }
@@ -133,7 +133,7 @@ public class Ninjabot
 
         currAngle += deltaAngle;
         lastAngles = orientation;
-        telemetry.addData("gyro", orientation.firstAngle);
+        control.telemetry.addData("gyro", orientation.firstAngle);
         return currAngle;
     }
 
@@ -141,12 +141,12 @@ public class Ninjabot
         resetAngle();
         double error = degrees;
 
-        while(opModeIsActive() && Math.abs(error) > 2){
+        while(control.opModeIsActive() && Math.abs(error) > 2){
             double motorPower = (error < 0 ? -0.3: 0.3);
             leftDrive.setPower(motorPower);
             rightDrive.setPower(-motorPower);
-            telemetry.addData("error", error);
-            telemetry.update();
+            control.telemetry.addData("error", error);
+            control.telemetry.update();
 
         }
         leftDrive.setPower(0);
@@ -216,7 +216,7 @@ public class Ninjabot
         //while (robotError > 180)  robotError -= 360;
         //while (robotError <= -180) robotError += 360;
         Orientation angles =
-                gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
+                imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
                         AngleUnit.DEGREES);
 
         double deltaAngle = angles.firstAngle - gyroLastAngle.firstAngle;
