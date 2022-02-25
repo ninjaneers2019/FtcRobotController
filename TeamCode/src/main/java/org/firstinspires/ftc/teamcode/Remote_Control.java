@@ -36,12 +36,10 @@ public class Remote_Control extends LinearOpMode {
             float xAxis = gamepad1.left_stick_x;
             boolean boost = gamepad1.a;
             boolean slow = gamepad1.y;
-            boolean upArrow = gamepad1.dpad_up;
-            boolean downArrow = gamepad1.dpad_down;
-            boolean leftArrow = gamepad1.dpad_left;
-            boolean rightArrow = gamepad1.dpad_right;
-            boolean clawClose = gamepad1.x;
-            boolean clawOpen = gamepad1.b;
+            boolean clawClose = gamepad1.b;
+            boolean clawOpen = gamepad1.x;
+            boolean optiArm = gamepad1.left_bumper;
+            boolean stopArm = gamepad1.right_bumper;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
             double maxSpeed = 0.6;
@@ -49,11 +47,11 @@ public class Remote_Control extends LinearOpMode {
             double minSpeed = 0;
             boolean spinPower = false;
             double speedspin = 0;
-            spinPower = gamepad1.left_bumper;
+            spinPower = gamepad1.dpad_left;
             if(spinPower == true){
                 speedspin = 1;
             }
-            else if(gamepad1.right_bumper == true){
+            else if(gamepad1.dpad_right == true){
                 speedspin = -1;
             }
             else{
@@ -129,22 +127,9 @@ public class Remote_Control extends LinearOpMode {
 
             //buttons
             //making the robot face the cardinal directions of the board when buttons pressed
-            if (upArrow == true) {
-                robot.gyroTurn(0.8, 0);
-                telemetry.addData("move2",".8");
+            if (optiArm == true) {
 
             }
-            if (downArrow ==true){
-                robot.gyroTurn(0.8, 90);
-                telemetry.update();
-            }
-            if (leftArrow == true){
-                robot.gyroTurn(0.6, 270);
-            }
-            if (rightArrow == true){
-                robot.gyroTurn(0.6, 360);
-            }
-
             if (clawOpen == true){
                 robot.claw.setPosition(0.8);
             }

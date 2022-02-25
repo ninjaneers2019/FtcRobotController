@@ -63,23 +63,32 @@ public class FDW extends LinearOpMode{
         robot.liftArm.setPower(1);
         robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.driveTo(robot.convert(22), BACKWARD);
+        robot.driveTo(robot.convert(20), BACKWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
         robot.driveTo(550, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
         sleep(1000);
 
-        robot.driveTo(robot.convert(99), FORWARD); //drive backward towards the duck carosel
+        robot.driveTo(robot.convert(65), FORWARD); //drive backward towards the duck carosel
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
         robot.spinner.setPower(0.5); //spinner for the duck
         sleep(8000);
         robot.spinner.setPower(0);// turn off spinner
 
-        robot.driveTo(robot.convert(200), BACKWARD);
+        robot.driveTo(robot.convert(40), BACKWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
+        robot.driveTo(1100, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        sleep(1000);
+
+        robot.leftDrive.setPower(1);
+        robot.rightDrive.setPower(1);
+
+        robot.driveTo(robot.convert(100), FORWARD);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
     }
 
     }
