@@ -29,9 +29,9 @@ public class Gyro_Test extends LinearOpMode {
         robot.rightDrive.setPower(0.3);
 //set power for all wheels indefinitely
         //put moves here
-        robot.gyroTurn(50, 0);
+        robot.turn(10);
         sleep(9000);
-        robot.gyroTurn(50, 90);
+        robot.turn(90);
         sleep(9000);
         robot.gyroTurn(50, -135);
         sleep(9000);
